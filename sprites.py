@@ -116,7 +116,7 @@ class SpeedPotions(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game  
         # self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image = game.player_img
+        self.image = game.player_img2
         # self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.x = x

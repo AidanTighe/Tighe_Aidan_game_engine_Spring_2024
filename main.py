@@ -8,11 +8,13 @@ import sys
 from random import randint
 from os import path
 
+from math import floor
 # create a game class
 class Game:
     # initializes __init__
     def __init__(self):
         pg.init()
+        
         # pygame.init()
         # WIDTH and HEIGHT are varibles imported from settings
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -30,7 +32,7 @@ class Game:
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, 'images')
         self.player_img = pg.image.load(path.join(img_folder, 'Coin.png')).convert_alpha()
-        self.player_img = pg.image.load(path.join(img_folder, 'SpeedPotion.png')).convert_alpha() 
+        self.player_img2 = pg.image.load(path.join(img_folder, 'SpeedPotion.png')).convert_alpha() 
         self.map_data = [] 
         '''
         The with statement is a context manager in Python. 
@@ -44,6 +46,7 @@ class Game:
                 print(self.map_data)
 
     def new(self):
+        
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.potions = pg.sprite.Group()
