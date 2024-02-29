@@ -1,6 +1,6 @@
 # changes the screen size
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 1024
+HEIGHT = 768
 
 TILESIZE = 32
 
@@ -18,4 +18,6 @@ BLACK = (0, 0, 0)
 RED = (255, 0 , 0)
 
 PLAYER_SPEED = 300
+
+
 

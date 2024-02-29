@@ -2,6 +2,7 @@
 
 import pygame as pg
 from settings import *
+import pygame as pg
 
 
 # write a player class
@@ -16,6 +17,10 @@ class Player(pg.sprite.Sprite):
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
+        self.speed = 300
+        self.moneybag = 0 
+        
+
 
     def collide_with_walls(self, dir):
         if dir == 'x':
@@ -36,24 +41,30 @@ class Player(pg.sprite.Sprite):
                     self.y = hits[0].rect.bottom 
                 self.vy = 0
                 self.rect.y = self.y
-        
-    def collide_with_speed_potion(self):
-        hits = pg.sprite.spritecollide(self, self.game.speedpotion, False)
+    
+    def collide_with_group(self, group, kill):
+        hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
-            #increase speed
-            PLAYER_SPEED + 200
+            if str(hits[0].__class__.__name__) == "Coin":
+                self.moneybag += 1
+            if str(hits[0].__class__.__name__) == "speedpotion":
+                self.speed += 500
+            if str(hits[0].__class__.__name__) == "Mob":
+                self.speed -= 200
+        
+    
 
     def get_keys(self):
         self.vx, self.vy = 0, 0
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT] or keys[pg.K_a]:
-            self.vx = -PLAYER_SPEED
+            self.vx = -self.speed
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
-            self.vx = PLAYER_SPEED
+            self.vx = self.speed
         if keys[pg.K_UP] or keys[pg.K_w]:
-            self.vy = -PLAYER_SPEED
+            self.vy = -self.speed
         if keys[pg.K_DOWN] or keys[pg.K_s]:
-            self.vy = PLAYER_SPEED
+            self.vy = self.speed
         
         
     # old motion
@@ -69,6 +80,8 @@ class Player(pg.sprite.Sprite):
         self.collide_with_walls('x')
         self.rect.y = self.y
         self.collide_with_walls('y')
+        self.collide_with_group(self.game.coins, True)
+        self.collide_with_group(self.game.potions, True)
         #self.rect.x = self.x * TILESIZE
         #self.rect.y = self.y * TILESIZE
         
@@ -97,24 +110,60 @@ class Wall(pg.sprite.Sprite):
             # self.speed *= -1
 
 #makes a speed potion
-class Potions(pg.sprite.Sprite):
+class SpeedPotions(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.potions
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game  
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(RED)
+        # self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = game.player_img
+        # self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
-    
-    def SpeedPotion(self, x, y):
-        self.game = False
-    
-        
 
+    
+    #def SpeedPotion(self, x, y):
+        #self.game = False
+    
+class Coin(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.coins
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        # self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = game.player_img
+        # self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+
+class Mob(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.mobs
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+        self.speed = .5
+    def update(self):
+        # self.rect.x += 1
+        self.rect.x += TILESIZE * self.speed
+        # self.rect.y += TILESIZE * self.speed
+        if self.rect.x > WIDTH or self.rect.x < 0:
+            self.speed *= -1
+        # if self.rect.y > HEIGHT or self.rect.y < 0:
+        #     self.speed *= -1
 
 
 
