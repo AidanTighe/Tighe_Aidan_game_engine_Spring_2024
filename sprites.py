@@ -2,7 +2,6 @@
 
 import pygame as pg
 from settings import *
-import pygame as pg
 
 
 # write a player class
@@ -42,15 +41,7 @@ class Player(pg.sprite.Sprite):
                 self.vy = 0
                 self.rect.y = self.y
     
-    def collide_with_group(self, group, kill):
-        hits = pg.sprite.spritecollide(self, group, kill)
-        if hits:
-            if str(hits[0].__class__.__name__) == "Coin":
-                self.moneybag += 1
-            if str(hits[0].__class__.__name__) == "speedpotion":
-                self.speed += 500
-            if str(hits[0].__class__.__name__) == "Mob":
-                self.speed -= 200
+    
         
     
 
@@ -59,12 +50,17 @@ class Player(pg.sprite.Sprite):
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT] or keys[pg.K_a]:
             self.vx = -self.speed
+            print(self.rect.x)
+            print(self.rect.y)
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
             self.vx = self.speed
         if keys[pg.K_UP] or keys[pg.K_w]:
             self.vy = -self.speed
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.vy = self.speed
+        if self.vx !=0 and self.vy != 0:
+            self.vx *=0.7071
+            self.vy *=0.7071
         
         
     # old motion
@@ -82,8 +78,21 @@ class Player(pg.sprite.Sprite):
         self.collide_with_walls('y')
         self.collide_with_group(self.game.coins, True)
         self.collide_with_group(self.game.potions, True)
+        self.collide_with_group(self.game.mobs, True)
         #self.rect.x = self.x * TILESIZE
         #self.rect.y = self.y * TILESIZE
+
+    def collide_with_group(self, group, kill):
+        hits = pg.sprite.spritecollide(self, group, kill)
+        if hits:
+            if str(hits[0].__class__.__name__) == "Coin":
+                self.moneybag += 1
+            if str(hits[0].__class__.__name__) == "SpeedPotion":
+                self.speed += 500
+            if str(hits[0].__class__.__name__) == "Mob":
+                self.speed -= 200
+                time. sleep(5)
+                self.speed += 300
         
 # write a wall class
 class Wall(pg.sprite.Sprite):
@@ -123,7 +132,16 @@ class SpeedPotions(pg.sprite.Sprite):
         self.y = y
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
-
+        self.speed = 0
+    def update(self):
+        # self.rect.x += 1
+        self.rect.x += TILESIZE * self.speed
+        # self.rect.y += TILESIZE * self.speed
+        if self.rect.x > WIDTH or self.rect.x < 0:
+            self.speed *= -1
+        # if self.rect.y > HEIGHT or self.rect.y < 0:
+        #     self.speed *= -1
+       
     
     #def SpeedPotion(self, x, y):
         #self.game = False
