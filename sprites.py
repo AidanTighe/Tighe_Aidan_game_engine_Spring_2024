@@ -4,6 +4,7 @@ import pygame as pg
 from settings import *
 
 
+
 # write a player class
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -18,6 +19,7 @@ class Player(pg.sprite.Sprite):
         self.y = y * TILESIZE
         self.speed = 300
         self.moneybag = 0 
+        
         
 
 
@@ -91,8 +93,10 @@ class Player(pg.sprite.Sprite):
                 self.speed += 500
             if str(hits[0].__class__.__name__) == "Mob":
                 self.speed -= 200
-                time. sleep(5)
-                self.speed += 300
+                # import time
+                # t = 5
+                # time.sleep(t)
+                # self.speed += 300
         
 # write a wall class
 class Wall(pg.sprite.Sprite):
@@ -132,7 +136,7 @@ class SpeedPotions(pg.sprite.Sprite):
         self.y = y
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
-        self.speed = 0
+        self.speed = .000001
     def update(self):
         # self.rect.x += 1
         self.rect.x += TILESIZE * self.speed
@@ -180,8 +184,10 @@ class Mob(pg.sprite.Sprite):
         # self.rect.y += TILESIZE * self.speed
         if self.rect.x > WIDTH or self.rect.x < 0:
             self.speed *= -1
-        # if self.rect.y > HEIGHT or self.rect.y < 0:
-        #     self.speed *= -1
+    
+
+        
+
 
 
 
