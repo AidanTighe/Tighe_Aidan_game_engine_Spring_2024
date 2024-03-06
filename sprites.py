@@ -136,15 +136,14 @@ class SpeedPotions(pg.sprite.Sprite):
         self.y = y
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
-        self.speed = .000001
-    def update(self):
-        # self.rect.x += 1
-        self.rect.x += TILESIZE * self.speed
-        # self.rect.y += TILESIZE * self.speed
-        if self.rect.x > WIDTH or self.rect.x < 0:
-            self.speed *= -1
-        # if self.rect.y > HEIGHT or self.rect.y < 0:
-        #     self.speed *= -1
+    # def update(self):
+    #     # self.rect.x += 1
+    #     self.rect.x += TILESIZE * self.speed
+    #     # self.rect.y += TILESIZE * self.speed
+    #     if self.rect.x > WIDTH or self.rect.x < 0:
+    #         self.speed *= -1
+    #     # if self.rect.y > HEIGHT or self.rect.y < 0:
+    #     #     self.speed *= -1
        
     
     #def SpeedPotion(self, x, y):
