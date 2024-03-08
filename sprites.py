@@ -2,6 +2,8 @@
 
 import pygame as pg
 from settings import *
+#from utils import *
+#from random import choice
 
 
 
@@ -21,8 +23,28 @@ class Player(pg.sprite.Sprite):
         self.moneybag = 0 
         
         
-
-
+    def get_keys(self):
+        self.vx, self.vy = 0, 0
+        keys = pg.key.get_pressed()
+        if keys[pg.K_LEFT] or keys[pg.K_a]:
+            self.vx = -self.speed
+            print(self.rect.x)
+            print(self.rect.y)
+        if keys[pg.K_RIGHT] or keys[pg.K_d]:
+            self.vx = self.speed
+        if keys[pg.K_UP] or keys[pg.K_w]:
+            self.vy = -self.speed
+        if keys[pg.K_DOWN] or keys[pg.K_s]:
+            self.vy = self.speed
+        if self.vx !=0 and self.vy != 0:
+            self.vx *=0.7071
+            self.vy *=0.7071
+        
+    # old motion
+    # def move(self, dx=0, dy=0):
+    #     self.x += dx
+    #     self.y += dy
+            
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
@@ -42,34 +64,22 @@ class Player(pg.sprite.Sprite):
                     self.y = hits[0].rect.bottom 
                 self.vy = 0
                 self.rect.y = self.y
-    
-    
-        
-    
 
-    def get_keys(self):
-        self.vx, self.vy = 0, 0
-        keys = pg.key.get_pressed()
-        if keys[pg.K_LEFT] or keys[pg.K_a]:
-            self.vx = -self.speed
-            print(self.rect.x)
-            print(self.rect.y)
-        if keys[pg.K_RIGHT] or keys[pg.K_d]:
-            self.vx = self.speed
-        if keys[pg.K_UP] or keys[pg.K_w]:
-            self.vy = -self.speed
-        if keys[pg.K_DOWN] or keys[pg.K_s]:
-            self.vy = self.speed
-        if self.vx !=0 and self.vy != 0:
-            self.vx *=0.7071
-            self.vy *=0.7071
-        
-        
-    # old motion
-    # def move(self, dx=0, dy=0):
-    #     self.x += dx
-    #     self.y += dy
-        
+    def collide_with_group(self, group, kill):
+        hits = pg.sprite.spritecollide(self, group, kill)
+        if hits:
+            if str(hits[0].__class__.__name__) == "Coin":
+                self.moneybag += 1
+            if str(hits[0].__class__.__name__) == "SpeedPotion":
+                print(hits[0].__class__.__name__)
+                self.speed += 500
+            if str(hits[0].__class__.__name__) == "Mob":
+                self.speed -= 200
+                # import time
+                # t = 5
+                # time.sleep(t)
+                # self.speed += 300
+
     def update(self):
         self.get_keys()
         self.x += self.vx * self.game.dt
@@ -84,19 +94,7 @@ class Player(pg.sprite.Sprite):
         #self.rect.x = self.x * TILESIZE
         #self.rect.y = self.y * TILESIZE
 
-    def collide_with_group(self, group, kill):
-        hits = pg.sprite.spritecollide(self, group, kill)
-        if hits:
-            if str(hits[0].__class__.__name__) == "Coin":
-                self.moneybag += 1
-            if str(hits[0].__class__.__name__) == "SpeedPotion":
-                self.speed += 500
-            if str(hits[0].__class__.__name__) == "Mob":
-                self.speed -= 200
-                # import time
-                # t = 5
-                # time.sleep(t)
-                # self.speed += 300
+
         
 # write a wall class
 class Wall(pg.sprite.Sprite):
