@@ -2,8 +2,8 @@
 
 import pygame as pg
 from settings import *
-#from utils import *
-#from random import choice
+from utils import *
+from random import choice
 
 
 

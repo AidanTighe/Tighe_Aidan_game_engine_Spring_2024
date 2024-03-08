@@ -8,23 +8,24 @@ import sys
 from random import randint
 from os import path
 
+# added math function for clock
 from math import floor
 # create a game class
 class Game:
     # initializes __init__
     def __init__(self):
         pg.init()
-        
-        # pygame.init()
+        pg.mixer.init()
         # WIDTH and HEIGHT are varibles imported from settings
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        pg.display.set_caption(TITLE)
         # makes the string "My first Video Game" the caption
         pg.display.set_caption("My First Video Game")
         # Clock(): class that tracks time using ticks
         self.clock = pg.time.Clock()
-        pg.key.set_repeat(500, 100)
-        self.running = True
-        self.playing = True
+        #pg.key.set_repeat(500, 100)
+        #self.running = True
+        #self.playing = True
         #run Method 
         #later on will store data game info
         self.load_data()
@@ -45,8 +46,13 @@ class Game:
                 self.map_data.append(line)
                 print(self.map_data)
 
+    def test_method(self):
+        print("I can be called from Sprites...")
+
     def new(self):
         
+        self.cooldown = Timer(self)
+        print("create new game...")
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.potions = pg.sprite.Group()
@@ -82,7 +88,6 @@ class Game:
             # this is input
             self.events()
             # this is processing
-            self.update()
             # this is output
             self.draw()
 
@@ -90,9 +95,8 @@ class Game:
         pg.quit()
         sys.exit()
     # method     
-    def input(self):
-        pass
     def update(self):
+        self.cooldown.ticking()
         self.all_sprites.update()
 
     #makes a grid for a square to go between
@@ -107,13 +111,16 @@ class Game:
         font = pg.font.Font(font_name, size)
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
-        text_rect.topleft = (x*TILESIZE,y*TILESIZE)
+        text_rect.topleft = (x,y)
         surface.blit(text_surface, text_rect)
 
     def draw(self):
         self.screen.fill(BGCOLOR)
-        self.draw_grid()
+        #self.draw_grid()
         self.all_sprites.draw(self.screen)
+        self.draw_text(self.screen, str(self.cooldown.current_time), 24, WHITE, WIDTH/2 - 32, 2)
+        self.draw_text(self.screen, str(self.cooldown.event_time), 24, WHITE, WIDTH/2 - 32, 80)
+        self.draw_text(self.screen, str(self.cooldown.get_countdown()), 24, WHITE, WIDTH/2 - 32, 120)
         self.draw_text(self.screen, str(self.player.moneybag), 64, WHITE, 1, 1)
         pg.display.flip()
     def events(self):
@@ -122,7 +129,6 @@ class Game:
                 # when you hit the red x the window closes and the game ends
                 if event.type == pg.QUIT:
                     self.quit()
-                    print("the game has ended...")
                 # keyboard events(dictating player's movement)
                 # gets inputs from the keyboard arrows and tells it what to do(move)
                 # if event.type == pg.KEYDOWN:
@@ -138,9 +144,21 @@ class Game:
                 #     if event.key == pg.K_DOWN or event.key == pg.K_s:
                 #         self.player.move(dy=1)
     def show_start_screen(self):
-        pass
-    def show_go_screen(self):
-        pass
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "This is the start screen - press any key to play", 24, WHITE, WIDTH/2, HEIGHT/2)
+        pg.display.flip()
+        self.wait_for_key()
+    
+    def wait_for_key(self):
+        waiting = True
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.quit()
+                if event.type == pg.KEYUP:
+                    waiting = False
     
 ############################################## Instantiate game... ################################
 # assigns Game to a varible, g

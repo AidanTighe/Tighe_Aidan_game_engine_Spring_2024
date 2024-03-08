@@ -4,6 +4,8 @@ HEIGHT = 768
 
 TILESIZE = 32
 
+TITLE = "The Best Game Ever"
+
 FPS = 30
 
 BGCOLOR = (0,0,0)
@@ -17,7 +19,7 @@ LIGHTGREY = ( 217, 217 , 214)
 BLACK = (0, 0, 0)
 RED = (255, 0 , 0)
 
-PLAYER_SPEED = 300
+#PLAYER_SPEED = 300
 
 
 
