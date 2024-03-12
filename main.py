@@ -10,6 +10,30 @@ from os import path
 
 # added math function for clock
 from math import floor
+
+def collide_with_walls(sprite, group, dir):
+    if dir == 'x':
+        hits = pg.sprite.spritecollide(sprite, group, False)
+        if hits:
+            if hits[0].rect.centerx > sprite.rect.centerx:
+                sprite.pos.x = hits[0].rect.left - sprite.rect.width / 2
+            if hits[0].rect.centerx < sprite.rect.centerx:
+                sprite.pos.x = hits[0].rect.right + sprite.rect.width / 2
+            sprite.vel.x = 0
+            sprite.rect.centerx = sprite.pos.x
+    if dir == 'y':
+        hits = pg.sprite.spritecollide(sprite, group, False)
+        if hits:
+            if hits[0].rect.centery > sprite.rect.centery:
+                sprite.pos.y = hits[0].rect.top - sprite.rect.height / 2
+            if hits[0].rect.centery < sprite.rect.centery:
+                sprite.pos.y = hits[0].rect.bottom + sprite.rect.height / 2
+            sprite.vel.y = 0
+            sprite.rect.centery = sprite.pos.y
+class Test():
+    def __init__(self):
+        print("I can bring...")
+
 # create a game class
 class Game:
     # initializes __init__
@@ -52,6 +76,7 @@ class Game:
     def new(self):
         
         self.cooldown = Timer(self)
+        self.testclass = Test()
         print("create new game...")
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
@@ -72,7 +97,7 @@ class Game:
                 if tile == 'P':
                     self.player = Player(self, col, row)
                 if tile == 'z':
-                    self.speedpotion = SpeedPotions(self, col, row)
+                    SpeedPotions(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
                 if tile == 'm':
@@ -87,6 +112,7 @@ class Game:
             self.dt = self.clock.tick(FPS) / 1000
             # this is input
             self.events()
+            #self.update()
             # this is processing
             # this is output
             self.draw()
@@ -124,11 +150,11 @@ class Game:
         self.draw_text(self.screen, str(self.player.moneybag), 64, WHITE, 1, 1)
         pg.display.flip()
     def events(self):
-            # listening for events
-            for event in pg.event.get():
-                # when you hit the red x the window closes and the game ends
-                if event.type == pg.QUIT:
-                    self.quit()
+        # listening for events
+        for event in pg.event.get():
+            # when you hit the red x the window closes and the game ends
+            if event.type == pg.QUIT:
+                self.quit()
                 # keyboard events(dictating player's movement)
                 # gets inputs from the keyboard arrows and tells it what to do(move)
                 # if event.type == pg.KEYDOWN:
@@ -143,12 +169,17 @@ class Game:
                 # if event.type == pg.KEYDOWN:
                 #     if event.key == pg.K_DOWN or event.key == pg.K_s:
                 #         self.player.move(dy=1)
+    # def show_start_screen(self):
+    #     self.screen.fill(BGCOLOR)
+    #     self.draw_text(self.screen, "This is the start screen - press any key to play", 24, WHITE, WIDTH/2, HEIGHT/2)
+    #     pg.display.flip()
+    #     self.wait_for_key()
     def show_start_screen(self):
         self.screen.fill(BGCOLOR)
         self.draw_text(self.screen, "This is the start screen - press any key to play", 24, WHITE, WIDTH/2, HEIGHT/2)
         pg.display.flip()
         self.wait_for_key()
-    
+
     def wait_for_key(self):
         waiting = True
         while waiting:
@@ -159,6 +190,7 @@ class Game:
                     self.quit()
                 if event.type == pg.KEYUP:
                     waiting = False
+
     
 ############################################## Instantiate game... ################################
 # assigns Game to a varible, g

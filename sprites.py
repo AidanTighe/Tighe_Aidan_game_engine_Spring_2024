@@ -5,6 +5,8 @@ from settings import *
 from utils import *
 from random import choice
 
+vec =pg.math.Vector2
+
 
 
 # write a player class
@@ -16,16 +18,22 @@ class Player(pg.sprite.Sprite):
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(WHITE)
         self.rect = self.image.get_rect()
-        self.vx, self.vy = 0, 0
+        self.vx, self.vy = x, y
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.speed = 300
         self.moneybag = 0 
+        self.status = ""
+        #self.hitpoints = 100
+        self.cooling = False
+        self.pos = vec(0,0)
         
         
     def get_keys(self):
         self.vx, self.vy = 0, 0
         keys = pg.key.get_pressed()
+        if keys[pg.K_t]:
+            self.game.test_method()
         if keys[pg.K_LEFT] or keys[pg.K_a]:
             self.vx = -self.speed
             print(self.rect.x)
@@ -74,7 +82,7 @@ class Player(pg.sprite.Sprite):
                 print(hits[0].__class__.__name__)
                 self.game.cooldown.cd = 5
                 self.cooling = True
-                #self.speed += 500
+                self.speed += 500
             if str(hits[0].__class__.__name__) == "Mob":
                 self.speed -= 200
                 # import time
@@ -162,7 +170,7 @@ class Mob(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
-        self.speed = .5
+        self.speed = 7
 
     def collide_with_walls(self, dir):
         if dir == 'x':
