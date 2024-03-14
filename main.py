@@ -80,6 +80,7 @@ class Game:
             self.events()
             # this is processing
             self.draw()
+            self.update()
 
     def quit(self):
         pg.quit()
