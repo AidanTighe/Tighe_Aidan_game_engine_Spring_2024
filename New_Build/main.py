@@ -15,6 +15,7 @@ class Game:
     def __init__(self):
         # init pygame
         pg.init()
+        pg.mixer.init()
         # set size of screen and be the screen
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
@@ -55,7 +56,7 @@ class Game:
                     self.player = Player(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
-                if tile == 'm':
+                if tile == 'M':
                     Mob(self, col, row)
 
     def run(self):
@@ -74,9 +75,9 @@ class Game:
         self.all_sprites.update()
     
     def draw_grid(self):
-         for x in range(0, WIDTH, TILESIZE):
+        for x in range(0, WIDTH, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
-         for y in range(0, HEIGHT, TILESIZE):
+        for y in range(0, HEIGHT, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
     def draw_text(self, surface, text, size, color, x, y):
         font_name = pg.font.match_font('arial')
@@ -86,12 +87,12 @@ class Game:
         text_rect.topleft = (x*TILESIZE,y*TILESIZE)
         surface.blit(text_surface, text_rect)
     def draw(self):
-            self.screen.fill(BGCOLOR)
-            self.draw_grid()
-            self.all_sprites.draw(self.screen)
-            self.draw_text(self.screen, str(self.player.moneybag), 64, WHITE, 1, 1)
+        self.screen.fill(BGCOLOR)
+        self.draw_grid()
+        self.all_sprites.draw(self.screen)
+        self.draw_text(self.screen, str(self.player.moneybag), 64, WHITE, 1, 1)
 
-            pg.display.flip()
+        pg.display.flip()
 
     def events(self):
          for event in pg.event.get():
@@ -107,6 +108,22 @@ class Game:
             #     if event.key == pg.K_DOWN:
             #         self.player.move(dy=1)
 
+    def show_start_screen(self):
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "This is the start screen - press any key to play", 24, WHITE, WIDTH/2, HEIGHT/2)
+        pg.display.flip()
+        self.wait_for_key()
+
+    def wait_for_key(self):
+        waiting = True
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.quit()
+                if event.type == pg.KEYUP:
+                    waiting = False
 # Instantiate the game... 
 g = Game()
 # use game method run to run
