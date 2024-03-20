@@ -40,6 +40,7 @@ class Game:
         print("create new game...")
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
+        self.wallies = pg.sprite.Group()
         self.coins = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
         # self.player1 = Player(self, 1, 1)
@@ -51,7 +52,9 @@ class Game:
                 print(col)
                 if tile == '1':
                     print("a wall at", row, col)
-                    Wall(self, col, row)
+                if tile == '2':
+                    print("a wallie at", row, col)
+                    Wallie(self, col, row)
                 if tile == 'P':
                     self.player = Player(self, col, row)
                 if tile == 'C':
