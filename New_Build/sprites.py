@@ -184,8 +184,9 @@ class WBlock(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.wblocks
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(YELLOW)
+        # self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = self.game.wblock_img
+        # self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y

@@ -29,6 +29,7 @@ class Game:
         self.game_folder = path.dirname(__file__)
         self.img_folder = path.join(self.game_folder, 'images')
         self.coin_img = pg.image.load(path.join(self.img_folder, 'CoiN.png')).convert_alpha()
+        self.wblock_img = pg.image.load(path.join(self.img_folder, 'finish.png')).convert_alpha()
 
         self.map_data = []
         '''
