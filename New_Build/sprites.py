@@ -1,6 +1,7 @@
 # This file was created by: Aidan Tighe
 import pygame as pg
 from settings import *
+import time
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -83,13 +84,25 @@ class Player(pg.sprite.Sprite):
                 self.vy = 0
                 self.rect.y = self.y
 
+        
+
+
     def collide_with_group(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
             if str(hits[0].__class__.__name__) == "Coin":
                 self.moneybag += 1
-            if str(hits[0].__class__.__name__) == "Mob":
-                self.speed -= 200
+        if hits:
+            if str(hits[0].__class__.__name__) == "SPotion":
+                self.speed += 500
+        if hits:
+            if str(hits[0].__class__.__name__) == "LWall":
+                self.game.show_end_screen()
+        if hits:
+            if str(hits[0].__class__.__name__) == "WBlock":
+                self.game.show_win_screen()
+                
+                
                 
 
     def update(self):
@@ -97,27 +110,20 @@ class Player(pg.sprite.Sprite):
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
         self.rect.x = self.x
-        # add collision later
         self.collide_with_walls('x')
         self.rect.y = self.y
-        # add collision later
         self.collide_with_walls('y')
 
         self.rect.x = self.x
         self.collide_with_wallies('x')
         self.rect.y = self.y
-        # add collision later
         self.collide_with_wallies('y')
+
         self.collide_with_group(self.game.coins, True)
-        self.collide_with_group(self.game.mobs, True)
-        # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
-        # if coin_hits:
-        #     print("I got a coin")
+        self.collide_with_group(self.game.spotions, True)
+        self.collide_with_group(self.game.lwalls, True)
+        self.collide_with_group(self.game.wblocks, True)
         
-
- 
-
-
 
 
 class Wall(pg.sprite.Sprite):
@@ -151,6 +157,20 @@ class Coin(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.coins
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
+        # self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = self.game.coin_img
+        # self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+class SPotion(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.spotions
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
@@ -159,9 +179,22 @@ class Coin(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
-class Mob(pg.sprite.Sprite):
+class WBlock(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.mobs
+        self.groups = game.all_sprites, game.wblocks
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+class LWall(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.lwalls
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE * 5, TILESIZE))

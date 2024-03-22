@@ -7,6 +7,7 @@ from sprites import *
 from random import randint
 import sys
 from os import path
+import time
 
 
 # Define game class...
@@ -22,15 +23,20 @@ class Game:
         # setting game clock 
         self.clock = pg.time.Clock()
         self.load_data()
+        #self.running = True
+        self.death = False
     def load_data(self):
-        game_folder = path.dirname(__file__)
+        self.game_folder = path.dirname(__file__)
+        self.img_folder = path.join(self.game_folder, 'images')
+        self.coin_img = pg.image.load(path.join(self.img_folder, 'CoiN.png')).convert_alpha()
+
         self.map_data = []
         '''
         The with statement is a context manager in Python. 
         It is used to ensure that a resource is properly closed or released 
         after it is used. This can help to prevent errors and leaks.
         '''
-        with open(path.join(game_folder, 'map.txt'), 'rt') as f:
+        with open(path.join(self.game_folder, 'map.txt'), 'rt') as f:
             for line in f:
                 print(line)
                 self.map_data.append(line)
@@ -42,7 +48,9 @@ class Game:
         self.walls = pg.sprite.Group()
         self.wallies = pg.sprite.Group()
         self.coins = pg.sprite.Group()
-        self.mobs = pg.sprite.Group()
+        self.spotions = pg.sprite.Group()
+        self.lwalls = pg.sprite.Group()
+        self.wblocks = pg.sprite.Group()
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
@@ -52,6 +60,7 @@ class Game:
                 print(col)
                 if tile == '1':
                     print("a wall at", row, col)
+                    Wall(self, col, row)
                 if tile == '2':
                     print("a wallie at", row, col)
                     Wallie(self, col, row)
@@ -59,8 +68,12 @@ class Game:
                     self.player = Player(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
+                if tile == 'S':
+                   SPotion(self, col, row)
                 if tile == 'M':
-                    Mob(self, col, row)
+                    LWall(self, col, row)
+                if tile == 'W':
+                    WBlock(self, col, row)
 
     def run(self):
         self.playing = True
@@ -87,10 +100,11 @@ class Game:
         font = pg.font.Font(font_name, size)
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
-        text_rect.topleft = (x*TILESIZE,y*TILESIZE)
+        text_rect.midtop = (x,y)
         surface.blit(text_surface, text_rect)
     def draw(self):
         self.screen.fill(BGCOLOR)
+        #self.screen.blit(self.background_img, self.background_rect)
         self.draw_grid()
         self.all_sprites.draw(self.screen)
         self.draw_text(self.screen, str(self.player.moneybag), 64, WHITE, 1, 1)
@@ -113,25 +127,48 @@ class Game:
 
     def show_start_screen(self):
         self.screen.fill(BGCOLOR)
-        self.draw_text(self.screen, "This is the start screen - press any key to play", 24, WHITE, WIDTH/2, HEIGHT/2)
+        self.draw_text(self.screen, "To Begin the Game click any key", 24, WHITE, WIDTH/2, HEIGHT/2)
         pg.display.flip()
         self.wait_for_key()
+
+    def show_end_screen(self):
+        self.screen.fill(RED)
+        self.draw_text(self.screen, "You Died a Horrifically Painful Death", 24, BLACK, WIDTH/2, HEIGHT/2)
+        pg.display.flip()
+        self.wait_for_key()
+        sys.exit()
+    
+    def show_win_screen(self):
+        self.screen.fill(GREEN)
+        self.draw_text(self.screen, "You beat the level, congrats", 24, BLACK, WIDTH/2, HEIGHT/2)
+        pg.display.flip()
+        self.wait_for_winkey()
+        sys.exit()
+
+    def wait_for_winkey(self):
+        waiting = True
+        while waiting:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.quit()
 
     def wait_for_key(self):
         waiting = True
         while waiting:
-            self.clock.tick(FPS)
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     waiting = False
                     self.quit()
                 if event.type == pg.KEYUP:
                     waiting = False
+
 # Instantiate the game... 
 g = Game()
 # use game method run to run
-# g.show_start_screen()
+g.show_start_screen()
 while True:
     g.new()
+    
     g.run()
-    # g.show_go_screen()
+
