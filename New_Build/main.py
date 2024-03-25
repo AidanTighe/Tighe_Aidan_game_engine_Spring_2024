@@ -52,6 +52,7 @@ class Game:
         self.spotions = pg.sprite.Group()
         self.lwalls = pg.sprite.Group()
         self.wblocks = pg.sprite.Group()
+        self.cwalls = pg.sprite.Group()
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
@@ -75,6 +76,8 @@ class Game:
                     LWall(self, col, row)
                 if tile == 'W':
                     WBlock(self, col, row)
+                if tile == 'w':
+                    CWall(self, col, row)
 
     def run(self):
         self.playing = True
@@ -136,7 +139,7 @@ class Game:
         self.screen.fill(RED)
         self.draw_text(self.screen, "You Died a Horrifically Painful Death", 24, BLACK, WIDTH/2, HEIGHT/2)
         pg.display.flip()
-        self.wait_for_key()
+        self.wait_for_losekey()
         sys.exit()
     
     def show_win_screen(self):
@@ -147,6 +150,14 @@ class Game:
         sys.exit()
 
     def wait_for_winkey(self):
+        waiting = True
+        while waiting:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.quit()
+    
+    def wait_for_losekey(self):
         waiting = True
         while waiting:
             for event in pg.event.get():

@@ -84,14 +84,31 @@ class Player(pg.sprite.Sprite):
                 self.vy = 0
                 self.rect.y = self.y
 
-        
-
+    def collide_with_cwalls(self, dir):
+        if dir == 'x':
+            hits = pg.sprite.spritecollide(self, self.game.cwalls, False)
+            if hits:
+                if self.vx > 0:
+                    self.x = hits[0].rect.left - self.rect.width
+                if self.vx < 0:
+                    self.x = hits[0].rect.right
+                self.vx = 0
+                self.rect.x = self.x
+        if dir == 'y':
+            hits = pg.sprite.spritecollide(self, self.game.cwalls, False)
+            if hits:
+                if self.vy > 0:
+                    self.y = hits[0].rect.top - self.rect.height
+                if self.vy < 0:
+                    self.y = hits[0].rect.bottom
+                self.vy = 0
+                self.rect.y = self.y
 
     def collide_with_group(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
             if str(hits[0].__class__.__name__) == "Coin":
-                self.moneybag += 1
+                self.moneybag += 1         
         if hits:
             if str(hits[0].__class__.__name__) == "SPotion":
                 self.speed += 500
@@ -119,12 +136,16 @@ class Player(pg.sprite.Sprite):
         self.rect.y = self.y
         self.collide_with_wallies('y')
 
+        self.rect.x = self.x
+        self.collide_with_cwalls('x')
+        self.rect.y = self.y
+        self.collide_with_cwalls('y')
+
         self.collide_with_group(self.game.coins, True)
         self.collide_with_group(self.game.spotions, True)
         self.collide_with_group(self.game.lwalls, True)
         self.collide_with_group(self.game.wblocks, True)
-        
-
+        self.collide_with_group(self.game.cwalls, True)
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -152,6 +173,30 @@ class Wallie(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
+class CWall(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.cwalls
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE * 4, TILESIZE))
+        self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+        self.ad = 1
+        self.speed = 0
+
+    def move(self):  
+        if self.game.player.moneybag >= 2:
+            while self.ad != 35:
+                self.rect.x += self.ad
+                self.ad += 1
+
+    def update(self):
+        self.move()
+
 class Coin(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.coins
@@ -178,6 +223,7 @@ class SPotion(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+
 
 class WBlock(pg.sprite.Sprite):
     def __init__(self, game, x, y):
