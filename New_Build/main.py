@@ -30,17 +30,18 @@ class Game:
         self.img_folder = path.join(self.game_folder, 'images')
         self.coin_img = pg.image.load(path.join(self.img_folder, 'CoiN.png')).convert_alpha()
         self.wblock_img = pg.image.load(path.join(self.img_folder, 'finish.png')).convert_alpha()
+        self.spotion_img = pg.image.load(path.join(self.img_folder, 'SPotion.png')).convert_alpha()
 
-        self.map_data = []
+        self.lvl2_data = []
         '''
         The with statement is a context manager in Python. 
         It is used to ensure that a resource is properly closed or released 
         after it is used. This can help to prevent errors and leaks.
         '''
-        with open(path.join(self.game_folder, 'map.txt'), 'rt') as f:
+        with open(path.join(self.game_folder, 'lvl2.txt'), 'rt') as f:
             for line in f:
                 print(line)
-                self.map_data.append(line)
+                self.lvl2_data.append(line)
 
     # Create run method which runs the whole GAME
     def new(self):
@@ -56,7 +57,7 @@ class Game:
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
-        for row, tiles in enumerate(self.map_data):
+        for row, tiles in enumerate(self.lvl2_data):
             print(row)
             for col, tile in enumerate(tiles):
                 print(col)

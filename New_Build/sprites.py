@@ -178,7 +178,7 @@ class CWall(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.cwalls
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE * 4, TILESIZE))
+        self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
         self.x = x
@@ -216,8 +216,9 @@ class SPotion(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.spotions
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(YELLOW)
+        # self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = self.game.spotion_img
+        # self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
