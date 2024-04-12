@@ -1,7 +1,12 @@
 # This file was created by: Aidan Tighe
 import pygame as pg
 from settings import *
+from os import path
 import time
+from utils import *
+
+game_folder = path.dirname(__file__)
+img_folder = path.join(game_folder, 'images')
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -10,13 +15,31 @@ class Player(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(WHITE)
+        self.spritesheet = Spritesheet(path.join(img_folder, 'Player.png'))
+        self.load_images()
+        # self.image.fill(WHITE)
         self.rect = self.image.get_rect()
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.moneybag = 0
+        self.current_frame = 0
+        self.last_update = 0
         self.speed = 300
+
+    def load_images(self):
+        self.standing_frames = [self.spritesheet.get_image(0, 0, 32, 32), 
+                                self.spritesheet.get_image(32, 0, 32, 32)]
+            
+    def animate(self):
+        now = pg.time.get_ticks()
+        if now - self.last_update > 350:
+            self.last_update = now
+            self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
+            bottom = self.rect.bottom
+            self.image = self.standing_frames[self.current_frame]
+            self.rect = self.image.get_rect()
+            self.rect.bottom = bottom
     
     def get_keys(self):
         self.vx, self.vy = 0, 0
@@ -123,6 +146,7 @@ class Player(pg.sprite.Sprite):
                 
 
     def update(self):
+        self.animate()
         self.get_keys()
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
