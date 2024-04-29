@@ -23,8 +23,12 @@ LEVEL1 = "level1.txt"
 LEVEL2 = "level2.txt"
 LEVEL3 = "level3.txt"
 LEVEL4 = "level4.txt"
+LEVEL5 = "level5.txt"
+LEVEL6 = "level6.txt"
+LEVEL7 = "level7.txt"
 
-levels = [LEVEL1, LEVEL2, LEVEL3, LEVEL4]
+
+levels = [LEVEL1, LEVEL2, LEVEL3, LEVEL4,LEVEL5,LEVEL6,LEVEL7]
 
 # Define game class...
 class Game:
@@ -153,9 +157,11 @@ class Game:
     
 
     def update(self):
-        if self.player.moneybag > 3:
+        self.all_sprites.update()
+        if self.player.moneybag > 2:
                 self.current_level += 1
                 self.change_level(levels[self.current_level])
+                
     
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
