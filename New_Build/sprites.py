@@ -44,6 +44,9 @@ class Player(pg.sprite.Sprite):
     def get_keys(self):
         self.vx, self.vy = 0, 0
         keys = pg.key.get_pressed()
+        if keys[pg.K_t]:
+            self.game.change_level("level3.txt")
+            
         if keys[pg.K_LEFT] or keys[pg.K_a]:
             self.vx = -self.speed  
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
@@ -139,7 +142,7 @@ class Player(pg.sprite.Sprite):
             if str(hits[0].__class__.__name__) == "LWall":
                 self.game.show_end_screen()
         if hits:
-            if str(hits[0].__class__.__name__) == "WBlock":
+            if str(hits[0].__class__.__name__) == "WBlock1":
                 self.game.show_win_screen()
                 
                 
@@ -168,7 +171,9 @@ class Player(pg.sprite.Sprite):
         self.collide_with_group(self.game.coins, True)
         self.collide_with_group(self.game.spotions, True)
         self.collide_with_group(self.game.lwalls, True)
-        self.collide_with_group(self.game.wblocks, True)
+        self.collide_with_group(self.game.wblock1s, True)
+        self.collide_with_group(self.game.wblock2s, True)
+        self.collide_with_group(self.game.wblock3s, True)
         self.collide_with_group(self.game.cwalls, True)
 
 class Wall(pg.sprite.Sprite):
@@ -250,9 +255,9 @@ class SPotion(pg.sprite.Sprite):
         self.rect.y = y * TILESIZE
 
 
-class WBlock(pg.sprite.Sprite):
+class WBlock1(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.wblocks
+        self.groups = game.all_sprites, game.wblock1s
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         # self.image = pg.Surface((TILESIZE, TILESIZE))
@@ -263,6 +268,35 @@ class WBlock(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+
+class WBlock2(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.wblock2s
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        # self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = self.game.wblock_img
+        # self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+class WBlock3(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.wblock3s
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        # self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = self.game.wblock_img
+        # self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
 
 class LWall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
