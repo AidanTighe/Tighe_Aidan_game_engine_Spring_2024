@@ -1,4 +1,4 @@
-# This file was created by: Chris Cozort
+# This file was created by: Aidan Tighe
 
 # import libraries and modules
 import pygame as pg
@@ -42,14 +42,15 @@ class Game:
         pg.display.set_caption(TITLE)
         # setting game clock 
         self.clock = pg.time.Clock()
-        self.load_data()
+        
         #self.running = True
         self.death = False
         self.current_level = 0
+
     def load_data(self):
         self.game_folder = path.dirname(__file__)
         self.img_folder = path.join(self.game_folder, 'images')
-        self.map = Map(path.join(game_folder, 'level1.txt'))
+        self.map = Map(path.join(game_folder, levels[self.current_level]))
         self.coin_img = pg.image.load(path.join(self.img_folder, 'CoiN.png')).convert_alpha()
         self.wblock_img = pg.image.load(path.join(self.img_folder, 'finish.png')).convert_alpha()
         self.spotion_img = pg.image.load(path.join(self.img_folder, 'SPotion.png')).convert_alpha()
@@ -69,11 +70,12 @@ class Game:
         for s in self.all_sprites:
             s.kill()
         self.player.moneybag = 0
-        self.map_data = []
+        self.map = Map(path.join(game_folder, levels[self.current_level]))
+
         with open(path.join(self.game_folder, lvl), 'rt') as f:
             for line in f:
                 print(line)
-                self.map_data.append(line)
+                self.map.data.append(line)
         for row, tiles in enumerate(self.map.data):
             print(row)
             for col, tile in enumerate(tiles):
@@ -100,6 +102,8 @@ class Game:
                     WBlock2(self, col, row)
                 if tile == 'b':
                     WBlock3(self, col, row)
+        print(self.current_level)
+        print(levels[self.current_level])
     def new(self):
         self.load_data()
         print("create new game...")
@@ -110,8 +114,6 @@ class Game:
         self.spotions = pg.sprite.Group()
         self.lwalls = pg.sprite.Group()
         self.wblock1s = pg.sprite.Group()
-        self.wblock2s = pg.sprite.Group()
-        self.wblock3s = pg.sprite.Group()
         self.cwalls = pg.sprite.Group()
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
@@ -159,9 +161,10 @@ class Game:
     def update(self):
         self.all_sprites.update()
         if self.player.moneybag > 2:
-                self.current_level += 1
-                self.change_level(levels[self.current_level])
-                
+            print("moneybag is full")
+            self.current_level += 1
+            self.change_level(levels[self.current_level])
+            
     
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -211,20 +214,20 @@ class Game:
         self.wait_for_losekey()
         sys.exit()
     
-    def show_win_screen(self):
-        self.screen.fill(GREEN)
-        self.draw_text(self.screen, "You beat the level, congrats", 24, BLACK, WIDTH/2, HEIGHT/2)
-        pg.display.flip()
-        self.wait_for_winkey()
-        sys.exit()
+    # def show_win_screen(self): 
+    #     self.screen.fill(GREEN)
+    #     self.draw_text(self.screen, "You beat the level, congrats", 24, BLACK, WIDTH/2, HEIGHT/2)
+    #     pg.display.flip()
+    #     self.wait_for_winkey()
+    #     sys.exit()
 
-    def wait_for_winkey(self):
-        waiting = True
-        while waiting:
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    waiting = False
-                    self.quit()
+    # def wait_for_winkey(self):
+    #     waiting = True
+    #     while waiting:
+    #         for event in pg.event.get():
+    #             if event.type == pg.QUIT:
+    #                 waiting = False
+    #                 self.quit()
     
     def wait_for_losekey(self):
         waiting = True

@@ -5,6 +5,7 @@ from os import path
 import time
 from utils import *
 
+
 game_folder = path.dirname(__file__)
 img_folder = path.join(game_folder, 'images')
 
@@ -143,7 +144,8 @@ class Player(pg.sprite.Sprite):
                 self.game.show_end_screen()
         if hits:
             if str(hits[0].__class__.__name__) == "WBlock1":
-                self.game.show_win_screen()
+                # self.current_level += 1
+                pass
                 
                 
                 
@@ -172,8 +174,6 @@ class Player(pg.sprite.Sprite):
         self.collide_with_group(self.game.spotions, True)
         self.collide_with_group(self.game.lwalls, True)
         self.collide_with_group(self.game.wblock1s, True)
-        self.collide_with_group(self.game.wblock2s, True)
-        self.collide_with_group(self.game.wblock3s, True)
         self.collide_with_group(self.game.cwalls, True)
 
 class Wall(pg.sprite.Sprite):
@@ -204,7 +204,7 @@ class Wallie(pg.sprite.Sprite):
 
 class CWall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.cwalls
+        self.groups = game.all_sprites, game.walls
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
