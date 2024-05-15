@@ -20,7 +20,7 @@ Secondary
 -Make good spritesdddd
 '''
 LEVEL1 = "level1.txt"
-LEVEL2 = "level2.txt"
+LEVEL2 = "level4.txt"
 LEVEL3 = "level3.txt"
 LEVEL4 = "level4.txt"
 LEVEL5 = "level5.txt"
@@ -94,14 +94,13 @@ class Game:
                    SPotion(self, col, row)
                 if tile == 'M':
                     LWall(self, col, row)
+                if tile == 'm':
+                    Mob(self, col, row)
                 if tile == 'w':
                     CWall(self, col, row)
                 if tile == 'W':
                     WBlock1(self, col, row)
-                if tile == 'B':
-                    WBlock2(self, col, row)
-                if tile == 'b':
-                    WBlock3(self, col, row)
+
         print(self.current_level)
         print(levels[self.current_level])
     def new(self):
@@ -115,6 +114,7 @@ class Game:
         self.lwalls = pg.sprite.Group()
         self.wblock1s = pg.sprite.Group()
         self.cwalls = pg.sprite.Group()
+        self.mobs = pg.sprite.Group()
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
@@ -136,14 +136,12 @@ class Game:
                    SPotion(self, col, row)
                 if tile == 'M':
                     LWall(self, col, row)
+                if tile == 'm':
+                    Mob(self, col, row)
                 if tile == 'w':
                     CWall(self, col, row)
                 if tile == 'W':
                     WBlock1(self, col, row)
-                if tile == 'B':
-                    WBlock2(self, col, row)
-                if tile == 'b':
-                    WBlock3(self, col, row)
 
     def run(self):
         self.playing = True
@@ -212,7 +210,7 @@ class Game:
         self.draw_text(self.screen, "You Died a Horrifically Painful Death", 24, BLACK, WIDTH/2, HEIGHT/2)
         pg.display.flip()
         self.wait_for_losekey()
-        sys.exit()
+        sys.exit()        
     
     # def show_win_screen(self): 
     #     self.screen.fill(GREEN)

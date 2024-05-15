@@ -1,3 +1,5 @@
+import pygame as pg
+
 # changes the screen size
 WIDTH = 1024
 HEIGHT = 768
@@ -19,6 +21,8 @@ LIGHTGREY = ( 217, 217 , 214)
 BLACK = (0, 0, 0)
 RED = (255, 0 , 0)
 
+
+MOB_HIT_RECT = pg.Rect(0,0,96,96)
 #PLAYER_SPEED = 300
 
 
