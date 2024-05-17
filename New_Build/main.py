@@ -20,11 +20,11 @@ Secondary
 -Make good spritesdddd
 '''
 LEVEL1 = "level1.txt"
-LEVEL2 = "level4.txt"
+LEVEL2 = "level2.txt"
 LEVEL3 = "level3.txt"
-LEVEL4 = "level4.txt"
-LEVEL5 = "level5.txt"
-LEVEL6 = "level6.txt"
+LEVEL4 = "level6.txt"
+LEVEL5 = "level4.txt"
+LEVEL6 = "level5.txt"
 LEVEL7 = "level7.txt"
 
 
@@ -52,6 +52,7 @@ class Game:
         self.img_folder = path.join(self.game_folder, 'images')
         self.map = Map(path.join(game_folder, levels[self.current_level]))
         self.coin_img = pg.image.load(path.join(self.img_folder, 'CoiN.png')).convert_alpha()
+        self.invisable_img = pg.image.load(path.join(self.img_folder, 'invisable.png')).convert_alpha()
         self.wblock_img = pg.image.load(path.join(self.img_folder, 'finish.png')).convert_alpha()
         self.spotion_img = pg.image.load(path.join(self.img_folder, 'SPotion.png')).convert_alpha()
         # self.lvl1_data = []

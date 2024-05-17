@@ -32,6 +32,7 @@ class Player(pg.sprite.Sprite):
         self.current_frame = 0
         self.last_update = 0
         self.speed = 210
+        self.can_collide = True
 
     def load_images(self):
         self.standing_frames = [self.spritesheet.get_image(0, 0, 32, 32), 
@@ -140,22 +141,39 @@ class Player(pg.sprite.Sprite):
         self.get_keys()
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
-
         self.rect.x = self.x
-        self.collide_with_walls('x')
+        if self.can_collide == True:
+            self.collide_with_walls('x')
         self.rect.y = self.y
-        self.collide_with_walls('y')
-
+        if self.can_collide == True:
+            self.collide_with_walls('y')
+            
+        self.rect.y = self.y
+        if self.can_collide == True:
+            self.collide_with_wallies('y')
         self.rect.x = self.x
-        self.collide_with_wallies('x')
-        self.rect.y = self.y
-        self.collide_with_wallies('y')
+        if self.can_collide == True:
+            self.collide_with_wallies('x')
+        
 
         self.collide_with_group(self.game.coins, True)
         self.collide_with_group(self.game.spotions, True)
         self.collide_with_group(self.game.lwalls, True)
         self.collide_with_group(self.game.wblock1s, True)
         self.collide_with_group(self.game.mobs, True)
+        self.collide_with_group(self.game.wallies, True)
+
+
+    # def update(self):
+    #     self.animate()
+    #     self.get_keys()
+    #     self.x += self.vx * self.game.dt
+    #     self.y += self.vy * self.game.dt
+
+    #     self.rect.x = self.x
+    #     self.collide_with_wallies('x')
+    #     self.rect.y = self.y
+    #     self.collide_with_wallies('y')
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -289,65 +307,51 @@ class Mob(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.mobs
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        # self.image = game.mob_img
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(RED)
-        # self.image = self.game.mob_img
-        # self.image.set_colorkey(BLACK)
+        # self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = self.game.invisable_img
+        # self.image.fill(BGCOLOR)
         self.rect = self.image.get_rect()
-        self.hit_rect = MOB_HIT_RECT.copy()
-        self.hit_rect.center = self.rect.center
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
         self.pos = vec(x, y) * TILESIZE
-        self.vel = vec(0, 0)
-        self.acc = vec(0, 0)
-        self.rect.center = self.pos
-        self.rot = 0
-        self.chase_distance = 300
-        # added
-        self.speed = 220
-        self.chasing = True
-
-    def sensor(self):
-        if abs(self.rect.x - self.game.player.rect.x) < self.chase_distance and abs(self.rect.y - self.game.player.rect.y) < self.chase_distance:
-            self.chasing = True
-        else:
-            self.chasing = False
-
-    def collide_with_walls(self, dir):
-        if dir == 'x':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False)
-            if hits:
-                if self.vel.x > 0:
-                    self.x = hits[0].rect.left - self.rect.width
-                if self.vel.x < 0:
-                    self.x = hits[0].rect.right
-                self.vel.x = 0
-                self.rect.x = self.x
-        if dir == 'y':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False)
-            if hits:
-                if self.vel.y > 0:
-                    self.y = hits[0].rect.top - self.rect.height
-                if self.vel.y < 0:
-                    self.y = hits[0].rect.bottom
-                self.vel.y = 0
-                self.rect.y = self.y
-
-    def update(self):
-        self.sensor()
-        if self.chasing:
-            self.rot = (self.game.player.rect.center - self.pos).angle_to(vec(1, 0))
-            self.rect = self.image.get_rect()
-            self.rect.center = self.pos
-            self.acc = vec(self.speed, 0).rotate(-self.rot)
-            self.acc += self.vel * -1
-            self.vel += self.acc * self.game.dt
-            # equation of motion
-            self.pos += self.vel * self.game.dt + 0.5 * self.acc * self.game.dt ** 2
-            # hit_rect used to account for adjusting the square collision when image rotates
-            self.hit_rect.centerx = self.pos.x
-            self.collide_with_walls('x')
-            self.hit_rect.centery = self.pos.y
-            self.collide_with_walls('y')
-            self.rect.center = self.hit_rect.center
         
+    def move(self):
+            #pythag formula for making enemy
+            self.distance_x = self.game.player.x - self.rect.x
+            self.distance_y = self.game.player.y - self.rect.y
+            self.distance = (self.distance_x ** 2 + self.distance_y ** 2) ** 0.5
+   
+            #make stop chasing
+            if self.distance >= 250 or self.distance <= 5:
+                self.speed = 0
+            elif self.distance <= 200:
+                self.speed = 1
+   
+            #make enemy "chase" player
+            if self.distance != 0:
+                self.rect.x += self.speed * self.distance_x / self.distance
+                self.rect.y += self.speed * self.distance_y / self.distance
+ 
+    def move(self):
+            #pythag formula for making enemy
+            self.distance_x = self.game.player.x - self.rect.x
+            self.distance_y = self.game.player.y - self.rect.y
+            self.distance = (self.distance_x ** 2 + self.distance_y ** 2) ** 0.5
+   
+            #make stop chasing
+            if self.distance >= 250 or self.distance <= 5:
+                self.speed = 0
+            elif self.distance <= 200:
+                self.speed = 4
+   
+            #make enemy "chase" player
+            if self.distance != 0:
+                self.rect.x += self.speed * self.distance_x / self.distance
+                self.rect.y += self.speed * self.distance_y / self.distance
+ 
+    def update(self):
+        self.x = self.rect.x
+        self.y = self.rect.y
+        self.move()
